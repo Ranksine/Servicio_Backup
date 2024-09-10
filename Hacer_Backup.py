@@ -12,12 +12,10 @@ import logging
 load_dotenv()
 
 # ------------------- VARIABLES GLOBALES -------------------
-source_folder = 'S:\\'
-carpeta_destino = 'G:\BACKUPS\DATABASE\BACKUPS'
-log_file = 'Transferencias.log'
-# source_folder = os.getenv('SOURCE_FOLDER')
-# carpeta_destino = os.getenv('FINAL_PATH')
-# log_file = os.getenv('LOGFILE_NAME')
+
+source_folder = os.getenv('SOURCE_FOLDER')
+carpeta_destino = os.getenv('FINAL_PATH')
+log_file = os.getenv('LOGFILE_NAME')
 
 archivos_existentes = 0 
 hora_alta_ini = datetime.time(8, 0)
