@@ -1,0 +1,23 @@
+Comandos relacionados al proyecto de Transferencia de Backup en Python
+
+------------------------ Convertir el script en un servicio ------------------------
+Antes de crear el servicio, es necesario compilar en un archivo ejecutable el script de Python
+1. Instalar la dependencia pyinstaller
+	pip install pyinstaller
+2. Crear el archivo ejecutable
+	pyinstaller --onefile --name <nombre del ejecutable> <script>.py
+
+NSSM para crear servicios
+Una vez creado el archivo ejecutable, ya se puede crear el servicio.
+Crear servicio
+	nssm install <nombre del servicio> "C:\Ruta\del\archivo\ejecutable.exe"
+
+Desinstalar el servicio
+	nssm remove <nombre del servicio>
+
+------------------------ Monitorear actividad y errores del servicio creado ------------------------
+1. En una consola de comandos
+	sc query <nombre del servicio>
+2. El resultado mostrar el estado del servicio, en donde se podrían observar los errores
+
+*Tambien se pueden analizar logs del servicio en el "Visor de eventos" de windows
