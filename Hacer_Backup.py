@@ -1,13 +1,12 @@
 import os 
-from dotenv import load_dotenv
 import time
 import shutil
+import logging
+import datetime
 from venv import logger
+from dotenv import load_dotenv
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-from datetime import datetime
-import datetime
-import logging
 
 load_dotenv()
 
@@ -111,6 +110,7 @@ def mover_archivo(source, destino):
         
         logger.info(f"Se completo la transferencia de {source} hacia: {destino}.")
         print(f'Se completo la transferencia de {source} hacia: {destino}.')
+        eliminar_respaldo_viejo(destino)
     except shutil.Error as e: # Atrapar cualquier error de la libreria shutil.
         if "already exists" in str(e): # Cuando ya existe un archivo con el mismo nombre en carpeta destino, se debe renombrar el archivo a mover.
             logger.error(f'Ya existe un archivo con el nombre {source}, se renombrará para poder hacer la transferencia.')
@@ -123,9 +123,26 @@ def mover_archivo(source, destino):
             shutil.move(source, nuevo_destino) # Reintentar mover archivo
             archivos_existentes = 0 # Limpiar variable global para el siguiente archivo.
             print(f'Se completo la transferencia de {source} hacia: {destino} despues del error.')
+            eliminar_respaldo_viejo(destino)
+            return
         else: # Atrapar cualquier otra excepcion de la librería shutil
-            logger.error(f'Ocurrió un error al intentar mover el archivo {source}: {e}')
-            print(f'Ocurrió un error al intentar mover el archivo {source}: {e}')
+            logger.error(f'Ocurrió un error al intentar mover el archivo {source}: {e}... Reintentando')
+            print(f'Ocurrió un error al intentar mover el archivo {source}: {e}... Reintentando')
+            return
+        
+         
+def eliminar_respaldo_viejo(directorio):
+    archivos_list = os.listdir(directorio)
+    
+    archivos_list.sort(key=lambda f: os.stat(os.path.join(directorio,f)).st_mtime)
+    
+    if len(archivos_list) >= 5 :
+        most_old_archivo = os.path.join(directorio, archivos_list[0])
+        print(f'El archivo mas antiguo es: {most_old_archivo}')
+        os.remove(most_old_archivo)
+        print('Ya se elimino el archivo mi valedor')
+        
+       
             
 def cambiar_nombre_archivo(source):
     """Método para renombrar el archivo destino cuando ya existe un archivo con el mismo nombre, se renombra bajo el formato: [nombre_original] + '_' + [numero_consecutivo] + '.bak'.
