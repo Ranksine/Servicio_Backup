@@ -132,6 +132,11 @@ def mover_archivo(source, destino):
         
          
 def eliminar_respaldo_viejo(directorio):
+    """Método para eliminar el archivo de respaldo más antiguo cuando existan mas de cinco (5) archivos de respaldo en la carpeta destino.
+
+    Args:
+        directorio (String): Carpeta en donde se encuentran los archivos de respaldo.
+    """
     archivos_list = os.listdir(directorio)
     
     archivos_list.sort(key=lambda f: os.stat(os.path.join(directorio,f)).st_mtime)
